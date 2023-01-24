@@ -16,11 +16,7 @@ data:
       # default is empty, assumed is public
       user:
         name: machineuser
-        password:
-          valueFrom:
-            secretKeyRef:
-              name: mysecret
-              key: password
+        pwdFromEnv: MACHINE_SECRET
     - name: crossplane/crossplane
     - name: crossplane/provider-alibaba
     - name: crossplane/provider-aws
