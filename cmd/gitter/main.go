@@ -57,6 +57,15 @@ type Config struct {
 	Repos []RepoConfig `yaml:"repos"`
 }
 
+func (c *Config) getAuthenticationUser(gRepo models.GitterRepo) *RepoUser {
+	for _, element := range c.Repos {
+		if element.Server == gRepo.Server && element.Name == gRepo.Repo {
+			return &element.User
+		}
+	}
+	return nil
+}
+
 type RepoConfig struct {
 	Name   string   `yaml:"name"`
 	Server string   `yaml:"server"`
@@ -132,7 +141,17 @@ func (g *Gitter) Index(gRepo models.GitterRepo, reply *string) error {
 		return err
 	}
 	defer os.RemoveAll(dir)
-	fullRepo := fmt.Sprintf("%s/%s/%s", strings.ToLower(gRepo.Server), strings.ToLower(gRepo.Org), strings.ToLower(gRepo.Repo))
+
+	authUser := g.conf.getAuthenticationUser(gRepo)
+
+	var fullRepo string
+
+	if authUser != nil {
+		fullRepo = fmt.Sprintf("%s/%s/%s", strings.ToLower(gRepo.Server), strings.ToLower(gRepo.Org), strings.ToLower(gRepo.Repo))
+	} else {
+		fullRepo = fmt.Sprintf("%s:%s@%s/%s/%s", authUser.Name, authUser.PwdFromEnv, strings.ToLower(gRepo.Server), strings.ToLower(gRepo.Org), strings.ToLower(gRepo.Repo))
+	}
+
 	cloneOpts := &git.CloneOptions{
 		URL:               fmt.Sprintf("https://%s", fullRepo),
 		Depth:             1,
