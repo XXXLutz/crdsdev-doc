@@ -53,8 +53,42 @@ const (
 	dbEnv       = "PG_DB"
 )
 
+type Config struct {
+	Repos []RepoConfig `yaml:"repos"`
+}
+
+type RepoConfig struct {
+	Name   string   `yaml:"name"`
+	Server string   `yaml:"server"`
+	User   RepoUser `yaml:"user"`
+}
+
+type RepoUser struct {
+	Name       string `yaml:"name"`
+	PwdFromEnv string `yaml:"pwdFromEnv"`
+}
+
+func readConf(filename string) (*Config, error) {
+	buf, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	c := &Config{}
+	err = yaml.Unmarshal(buf, c)
+	if err != nil {
+		return nil, fmt.Errorf("in file %q: %w", filename, err)
+	}
+
+	return c, err
+}
+
 func main() {
 	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", os.Getenv(userEnv), os.Getenv(passwordEnv), os.Getenv(hostEnv), os.Getenv(portEnv), os.Getenv(dbEnv))
+	conf, err := readConf("cmd/gitter/config.yaml")
+	if err != nil {
+		fmt.Println(err)
+	}
 	conn, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
 		panic(err)
@@ -65,6 +99,7 @@ func main() {
 	}
 	gitter := &Gitter{
 		conn: pool,
+		conf: conf,
 	}
 	rpc.Register(gitter)
 	rpc.HandleHTTP()
@@ -79,6 +114,7 @@ func main() {
 // Gitter indexes git repos.
 type Gitter struct {
 	conn *pgxpool.Pool
+	conf *Config
 }
 
 type tag struct {
@@ -96,7 +132,7 @@ func (g *Gitter) Index(gRepo models.GitterRepo, reply *string) error {
 		return err
 	}
 	defer os.RemoveAll(dir)
-	fullRepo := fmt.Sprintf("%s/%s/%s", "github.com", strings.ToLower(gRepo.Org), strings.ToLower(gRepo.Repo))
+	fullRepo := fmt.Sprintf("%s/%s/%s", strings.ToLower(gRepo.Server), strings.ToLower(gRepo.Org), strings.ToLower(gRepo.Repo))
 	cloneOpts := &git.CloneOptions{
 		URL:               fmt.Sprintf("https://%s", fullRepo),
 		Depth:             1,
