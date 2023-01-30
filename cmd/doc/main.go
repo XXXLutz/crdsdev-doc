@@ -109,13 +109,14 @@ type docData struct {
 }
 
 type orgData struct {
-	Page  pageData
-	Repo  string
-	Tag   string
-	At    string
-	Tags  []string
-	CRDs  map[string]models.RepoCRD
-	Total int
+	Page   pageData
+	Server string
+	Repo   string
+	Tag    string
+	At     string
+	Tags   []string
+	CRDs   map[string]models.RepoCRD
+	Total  int
 }
 
 type homeData struct {
@@ -365,12 +366,13 @@ func org(w http.ResponseWriter, r *http.Request) {
 		foundTag = tags[0]
 	}
 	if err := page.HTML(w, http.StatusOK, "org", orgData{
-		Page:  pageData,
-		Repo:  strings.Join([]string{org, repo}, "/"),
-		Tag:   foundTag,
-		Tags:  tags,
-		CRDs:  repoCRDs,
-		Total: len(repoCRDs),
+		Page:   pageData,
+		Server: server,
+		Repo:   strings.Join([]string{org, repo}, "/"),
+		Tag:    foundTag,
+		Tags:   tags,
+		CRDs:   repoCRDs,
+		Total:  len(repoCRDs),
 	}); err != nil {
 		log.Printf("orgTemplate.Execute(): %v", err)
 		fmt.Fprint(w, "Unable to render org template.")
@@ -446,7 +448,7 @@ func doc(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("successfully rendered doc template")
 }
-,
+
 // TODO(hasheddan): add testing and more reliable parse
 func parseGHURL(uPath string) (server, org, repo, group, version, kind, tag string, err error) {
 	u, err := url.Parse(uPath)
@@ -463,5 +465,5 @@ func parseGHURL(uPath string) (server, org, repo, group, version, kind, tag stri
 		tag = tagSplit[1]
 	}
 
-	return elements[1], elements[2], elements[3], elements[4], elements[5], strings.Split(elements[6], "@")[0], tag, nil
+	return elements[0], elements[1], elements[2], elements[3], elements[4], strings.Split(elements[5], "@")[0], tag, nil
 }
