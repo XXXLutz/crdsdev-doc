@@ -15,6 +15,9 @@ spec:
           containers:
           - name: gitter
             image: crdsdev/doc-gitter:latest
+            volumeMounts:
+              - name: repo-config
+                mountPath: ./
             env:
             - name: REDIS_HOST
               valueFrom:
@@ -26,4 +29,9 @@ spec:
                 configMapKeyRef:
                   name: doc-repos
                   key: repos
+          volumes:
+            - name: repo-config
+              configMap:
+                name: doc-repos
+
           restartPolicy: Never

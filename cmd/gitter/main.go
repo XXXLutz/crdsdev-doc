@@ -94,7 +94,7 @@ func readConf(filename string) (*Config, error) {
 
 func main() {
 	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", os.Getenv(userEnv), os.Getenv(passwordEnv), os.Getenv(hostEnv), os.Getenv(portEnv), os.Getenv(dbEnv))
-	conf, err := readConf("cmd/gitter/config.yaml")
+	conf, err := readConf("repos")
 	if err != nil {
 		fmt.Println(err)
 	}
