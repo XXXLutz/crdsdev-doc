@@ -94,7 +94,7 @@ func readConf(filename string) (*Config, error) {
 
 func main() {
 	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", os.Getenv(userEnv), os.Getenv(passwordEnv), os.Getenv(hostEnv), os.Getenv(portEnv), os.Getenv(dbEnv))
-	conf, err := readConf("usr/repos")
+	conf, err := readConf("/usr/repos.yaml")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -134,8 +134,6 @@ type tag struct {
 
 // Index indexes a git repo at the specified url.
 func (g *Gitter) Index(gRepo models.GitterRepo, reply *string) error {
-	log.Printf("Indexing repo %s/%s...\n", gRepo.Org, gRepo.Repo)
-
 	dir, err := ioutil.TempDir(os.TempDir(), "doc-gitter")
 	if err != nil {
 		return err
@@ -147,6 +145,8 @@ func (g *Gitter) Index(gRepo models.GitterRepo, reply *string) error {
 	var fullRepo string
 
 	fullRepo = fmt.Sprintf("%s/%s/%s", strings.ToLower(gRepo.Server), strings.ToLower(gRepo.Org), strings.ToLower(gRepo.Repo))
+
+	log.Printf("Indexing repo %s...\n", fullRepo)
 
 	cloneOpts := &git.CloneOptions{
 		URL:               fmt.Sprintf("https://%s", fullRepo),
