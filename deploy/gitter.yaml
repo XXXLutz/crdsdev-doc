@@ -17,7 +17,7 @@ spec:
             image: crdsdev/doc-gitter:latest
             volumeMounts:
               - name: repo-config
-                mountPath: ./
+                mountPath: usr
             env:
             - name: REDIS_HOST
               valueFrom:
@@ -32,6 +32,6 @@ spec:
           volumes:
             - name: repo-config
               configMap:
-                name: doc-repos
+                name: private-repos-auth
 
           restartPolicy: Never
