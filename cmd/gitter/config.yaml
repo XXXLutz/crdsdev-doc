@@ -4,6 +4,7 @@ metadata:
   name: private-repos-auth
   namespace: crdsdev
 data:
+  # Add authentication details for private Github repos and servers as shown in the example entry
   repos.yaml: |-
     repos:
      - name: owner/private-repository
