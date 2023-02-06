@@ -9,26 +9,19 @@ metadata:
   name: doc-repos
   namespace: crdsdev
 data:
-  repos:
-#   - name: owner/private-repository
-# default is github.com
-#     server: github.mycompany.com
-# default is empty, assumed is public
-#     user:
-#       name: machineuser
-#       pwdFromEnv: MACHINE_SECRET
-    - name: crossplane/crossplane
-    - name: crossplane/provider-alibaba
-    - name: crossplane/provider-aws
-    - name: crossplane/provider-azure
-    - name: crossplane/provider-gcp
-    - name: crossplane/provider-rook
-    - name: crossplane/oam-kubernetes-runtime
-    - name: crossplane-contrib/provider-helm
-    - name: jetstack/cert-manager
-    - name: kubernetes-sigs/cluster-api
-    - name: kubernetes-sigs/cluster-api-provider-packet
-    - name: kubernetes-sigs/security-profiles-operator
-    - name: packethost/crossplane-provider-packet
-    - name: projectcontour/contour
-    - name: schemahero/schemahero
+  repos: |
+    crossplane/crossplane,
+    crossplane/provider-alibaba,
+    crossplane/provider-aws,
+    crossplane/provider-azure,
+    crossplane/provider-gcp,
+    crossplane/provider-rook,
+    crossplane/oam-kubernetes-runtime,
+    crossplane-contrib/provider-helm,
+    jetstack/cert-manager,
+    kubernetes-sigs/cluster-api,
+    kubernetes-sigs/cluster-api-provider-packet,
+    kubernetes-sigs/security-profiles-operator,
+    packethost/crossplane-provider-packet,
+    projectcontour/contour,
+    schemahero/schemahero
