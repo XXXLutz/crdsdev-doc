@@ -92,6 +92,7 @@ type baseData struct {
 
 type docData struct {
 	Page        pageData
+	Server      string
 	Repo        string
 	Tag         string
 	At          string
@@ -396,6 +397,7 @@ func doc(w http.ResponseWriter, r *http.Request) {
 
 	if err := page.HTML(w, http.StatusOK, "doc", docData{
 		Page:        pageData,
+		Server:      server,
 		Repo:        strings.Join([]string{org, repo}, "/"),
 		Tag:         foundTag,
 		Group:       gvk.Group,
